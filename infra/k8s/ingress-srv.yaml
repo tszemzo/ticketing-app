@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # This allows to use regular expressions on our routes
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+   # To use it locally we should change ticketing.dev
+   # pointing to localhost at our host file: /etc/hosts
+    - host: ticketing.dev
+      http:
+        paths:
+          - path: /api/users/?(.*)
+            backend:
+              serviceName: auth-srv
+              servicePort: 3000

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  # This two parts says which pod it should try to manage
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: tszemzo/auth:latest
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: auth-srv
+spec:
+  selector:
+    app: auth
+  # ClusterIP is the default, not necessary to explicit it
+  type: ClusterIP
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

@@ -1,0 +1,25 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  # This do the following:
+  # 1) Start up everything
+  # 2) Delete all this objects when we stop skaffold
+  # 3) Update after every change
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    # Dont push to dockerhub after each change
+    push: false
+  artifacts:
+    # This will try to update the pod after every change
+    - image: tszemzo/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    
