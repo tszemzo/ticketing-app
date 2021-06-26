@@ -1,2 +1,6 @@
 # ticketing-app
-A microservices ticketting app with Node, Typescript, React, Docker and Kubernetes
+A microservices ticketing app with Node, Typescript, React, Docker and Kubernetes
+
+To run all out microservices with our K8s cluster and skaffold just run:
+
+`skaffold dev`
