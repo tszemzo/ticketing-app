@@ -16,6 +16,13 @@ spec:
       containers:
         - name: auth
           image: tszemzo/auth:latest
+          # List of env variables of our container
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
 ---
 apiVersion: v1
 kind: Service
