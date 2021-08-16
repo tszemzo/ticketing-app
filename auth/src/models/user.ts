@@ -33,7 +33,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   }
-});
+},
+ // Redefinind how we return user schema object to avoid _id or password 
+ // toJSON is the JSON.stringify() method, we are redifining it
+ // This is not very typical to do it here at the Model
+ {
+   toJSON: {
+    transform(doc, ret) {
+      // delete the props of the object we are returning
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.password;
+      delete ret.__v;
+    }
+   } 
+ });
 
 userSchema.pre('save', async function(done) {
   if (this.isModified('password')) {
