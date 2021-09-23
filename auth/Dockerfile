@@ -6,8 +6,8 @@ WORKDIR /app
 
 # Copying the package.json on the container before installing
 COPY package.json .
-# Install some dependencies
-RUN npm install
+# Install some dependencies, just the ones that are prod, not the dev ones
+RUN npm install --only=prod
 # Once packages are installed, we copy the whole rest of the app to use our cache just for code changes
 COPY . .
 
