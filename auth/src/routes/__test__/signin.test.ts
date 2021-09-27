@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { signup } from '../../test/utils';
 
 it('should return a 400 when the email supplied doesnt exist', () => {
   return request(app)
@@ -12,13 +13,7 @@ it('should return a 400 when the email supplied doesnt exist', () => {
 });
 
 it('should fail when an incorrect password is supplied', async () => {
-  await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test@test.com',
-      password: 'apassword'
-    })
-    .expect(201);
+  await signup()
 
   return request(app)
     .post('/api/users/signin')
@@ -30,19 +25,13 @@ it('should fail when an incorrect password is supplied', async () => {
 });
 
 it('should signin successfully when correct credentials are supplied', async () => {
-  await request(app)
-    .post('/api/users/signup')
-    .send({
-      email: 'test@test.com',
-      password: 'apassword'
-    })
-    .expect(201);
+  await signup()
 
   return request(app)
     .post('/api/users/signin')
     .send({
       email: 'test@test.com',
-      password: 'apassword'
+      password: 'password'
     })
     .expect(200);
 });

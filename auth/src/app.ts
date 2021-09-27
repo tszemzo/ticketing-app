@@ -11,7 +11,7 @@ import { errorHandler } from './middlewares/error-handler'
 import { NotFoundError } from './errors/not-found-error';
 
 const app = express();
-const isTestEnv = process.env.NODE_ENV === 'test';
+const isTestEnv = process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'local';
 // Adding this step to be sure express is aware that is behind a proxy of Ingress Nginx.
 // And to be sure that it should still trust traffic as being secure even though it comes from that proxy.
 app.set('trust proxy', true);
