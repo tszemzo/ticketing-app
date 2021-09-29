@@ -22,4 +22,12 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: tszemzo/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
     

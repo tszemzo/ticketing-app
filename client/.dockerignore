@@ -1,0 +1,13 @@
+# don't copy that from our local machine
+node_modules
+.next
+.git
+.DS_Store
+.editorconfig
+.env
+buildspec.yml
+docker-compose.yml
+*.pem
+dist
+!src/server/ssl
+sundry

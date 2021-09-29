@@ -36,11 +36,11 @@ jspm_packages/
 jsconfig.json
 
 dist
-/client
 /server
 /common
 /react-client
 /.history
+.next
 
 .cache/
 package-lock.json
