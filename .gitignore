@@ -37,7 +37,6 @@ jsconfig.json
 
 dist
 /server
-/common
 /react-client
 /.history
 .next

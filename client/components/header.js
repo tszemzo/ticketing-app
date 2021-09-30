@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 const Header = ({ currentUser }) => {
-  console.log('currentUser', currentUser);
   const links = [
     !currentUser && { label: 'Sign Up', href: '/auth/signup' },
     !currentUser && { label: 'Sign In', href: '/auth/signin' },
@@ -18,8 +17,6 @@ const Header = ({ currentUser }) => {
       )
     });
   
-  console.log('links', links);
-
   return (
     <nav className="navbar navbar-light bg-light">
       <Link href='/'>
