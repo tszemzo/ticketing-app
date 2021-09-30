@@ -1,8 +1,6 @@
-import axios from 'axios';
 import buildClient from '../api/build-client';
 
 const LandingPage = ({ currentUser }) => {
-  console.log(currentUser);
   return <h1>You are {currentUser ? null : 'not'} signed in</h1>;
 };
 
