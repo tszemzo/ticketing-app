@@ -18,6 +18,9 @@ spec:
           image: tszemzo/auth:latest
           # List of env variables of our container
           env:
+            # As this lives inside the cluster and there arent any user or passwords, this is secure
+            - name: MONGO_URI
+              value: 'mongodb://auth-mongo-srv:27017/auth'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
