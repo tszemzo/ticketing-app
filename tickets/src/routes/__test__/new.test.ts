@@ -1,11 +1,12 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { signup } from '../../test/utils';
-import { EMAIL } from '../../test/constants';
+import { TICKET } from '../../test/constants';
+import { Ticket } from '../../models/ticket';
 
 it('should have a route handler listening to /api/tickets for creation requests ', async () => {  
   const response = await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .send({});
     
   expect(response.status).not.toEqual(404);
@@ -13,7 +14,7 @@ it('should have a route handler listening to /api/tickets for creation requests 
 
 it('should access only if the user is signed in', async () => {
   await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .send({})
     .expect(401);
 });
@@ -21,7 +22,7 @@ it('should access only if the user is signed in', async () => {
 it('should return a status other than 401 if the user is signed in', async () => {
   const cookie = await signup();
   const response =  await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .set('Cookie', cookie)
     .send({})
 
@@ -31,7 +32,7 @@ it('should return a status other than 401 if the user is signed in', async () =>
 it('should return an error if an invalid title is provided', async () => {
   const cookie = await signup();
   await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .set('Cookie', cookie)
     .send({
       title: '',
@@ -40,7 +41,7 @@ it('should return an error if an invalid title is provided', async () => {
     .expect(400);
   
   await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .set('Cookie', cookie)
     .send({
       price: 10
@@ -48,10 +49,10 @@ it('should return an error if an invalid title is provided', async () => {
     .expect(400);
 });
 
-it('should return an error if an invalid prize is provided', async () => {
+it('should return an error if an invalid price is provided', async () => {
   const cookie = await signup();
   await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .set('Cookie', cookie)
     .send({
       title: 'A title',
@@ -60,7 +61,7 @@ it('should return an error if an invalid prize is provided', async () => {
     .expect(400);
 
   await request(app)
-    .get('/api/tickets')
+    .post('/api/tickets')
     .set('Cookie', cookie)
     .send({
       title: 'A title',
@@ -69,13 +70,22 @@ it('should return an error if an invalid prize is provided', async () => {
 });
 
 it('should create a valid ticket when valid inputs are provided', async () => {
+  const { price, title } = TICKET;
+  let tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(0);
+
   const cookie = await signup();
-  await request(app)
-    .get('/api/tickets')
+  const response = await request(app)
+    .post('/api/tickets')
     .set('Cookie', cookie)
     .send({
-      title: 'A title',
-      price: 20
+      title,
+      price
     })
     .expect(201);
+
+  tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(1);
+  expect(tickets[0].title).toEqual(title);
+  expect(tickets[0].price).toEqual(price);
 });
