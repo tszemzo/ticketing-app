@@ -1,7 +1,7 @@
 import request from 'supertest';
-import { app } from '../../app';
 import mongoose from 'mongoose';
 
+import { app } from '../../app';
 import { signup } from '../../test/utils';
 import { TICKET } from '../../test/constants';
 

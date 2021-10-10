@@ -1,8 +1,7 @@
-import request from 'supertest';
-
-import { app } from '../app';
-import { EMAIL } from './constants';
+import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+
+import { EMAIL } from './constants';
 
 async function signup() {
   // For this service, we are going to fake the generation of the cookie
@@ -10,7 +9,7 @@ async function signup() {
 
   // 1) Build a JWT payload: { id, email, iat }
   const payload = {
-    id: '123123',
+    id: new mongoose.Types.ObjectId().toString(),
     email: EMAIL
   }
 
