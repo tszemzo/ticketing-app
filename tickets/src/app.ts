@@ -6,6 +6,7 @@ import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@ts-tickets/common';
 import { createTicketRouter } from './routes/new';
 import { showTicketRouter } from './routes/show';
+import { indexTicketRouter } from './routes/index';
 
 const app = express();
 const isTestEnv = process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'local';
@@ -23,6 +24,7 @@ app.use(
 app.use(currentUser);
 app.use(createTicketRouter);
 app.use(showTicketRouter);
+app.use(indexTicketRouter);
 
 // This will catch every route not found, and even the async errors
 app.all('*', async (req, res) => {
