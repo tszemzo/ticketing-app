@@ -1,11 +1,14 @@
 import request from 'supertest';
 import { app } from '../../app';
+import mongoose from 'mongoose';
+
 import { signup } from '../../test/utils';
 import { TICKET } from '../../test/constants';
 
-it('should return a 404 if the ticket is not found', async () => {  
+it('should return a 404 if the ticket is not found', async () => {
+  const id = new mongoose.Types.ObjectId().toString();
   await request(app)
-    .get('/api/tickets/nonexistingid')
+    .get(`/api/tickets/${id}`)
     .send()
     .expect(404);
 });

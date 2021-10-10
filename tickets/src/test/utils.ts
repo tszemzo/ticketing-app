@@ -18,12 +18,15 @@ async function signup() {
   const token = jwt.sign(payload, process.env.JWT_KEY!);
 
   // 3) Build session Object. { jwt: MY_JWT }
-  const session = JSON.stringify({ jwt: token });
+  const session = { jwt: token };
 
-  // 4) Take JSON and encode it as base64
-  const base64 = Buffer.from(session).toString('base64');
+  // 4) Turn that session into JSON
+  const sessionJSON = JSON.stringify(session);
 
-  // 5) return a string thats the cookie with the encoded data (supertest uses arrays)
+  // 5) Take JSON and encode it as base64
+  const base64 = Buffer.from(sessionJSON).toString('base64');
+
+  // 6) return a string thats the cookie with the encoded data
   return [`express:sess=${base64}`];
 }
 
