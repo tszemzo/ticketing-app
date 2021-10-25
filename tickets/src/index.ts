@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { natsWrapper } from './nats-wrapper';
 
 import { app } from './app';
 
@@ -14,6 +15,18 @@ const start = async () => {
   // 27017 is the default port of mongo we setted up
   // auth is the name of the DB, we want to create
   try {
+    await natsWrapper.connect(
+      'ticketing', // clusterId -> setted up in infra/nats-depl
+      'asdasd', // clientId -> random string for now
+      'http://nats-srv:4222' // url -> setted up in infra/nats-depl
+    );
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed!');
+      process.exit();
+    });
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGINT', () => natsWrapper.client.close());
+
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
