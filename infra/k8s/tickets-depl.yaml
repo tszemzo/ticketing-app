@@ -18,6 +18,15 @@ spec:
           image: tszemzo/tickets:latest
           # List of env variables of our container
           env:
+            # NATS Env variables
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # This sets the pod name to the client ID value so we can easily match them if we have more than one tckt service (as this ID should be unique)
             # As this lives inside the cluster and there arent any user or passwords, this is secure
             - name: MONGO_URI
               value: 'mongodb://tickets-mongo-srv:27017/tickets'
