@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { app } from '../../app';
 import { signup } from '../../test/utils';
 import { TICKET } from '../../test/constants';
+import { natsWrapper } from '../../nats-wrapper';
 
 const { price, title } = TICKET;
 
@@ -104,4 +105,26 @@ it('should update the ticket provided valid inputs', async () => {
 
   expect(ticketUpdated.body.title).toEqual('A valid title');
   expect(ticketUpdated.body.price).toEqual(1000);
+});
+
+it('should publish an update event', async () => {  
+  const cookie = await signup();
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title,
+      price
+    })
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'A valid title',
+      price: 1000
+    })
+    .expect(200);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalledTimes(2);
 });
