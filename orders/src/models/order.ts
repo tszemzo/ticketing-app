@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { OrderStatus } from '@ts-tickets/common';
 import { TicketDoc } from './ticket';
 
+export { OrderStatus };
+
 // An interface that describes the props
 // that are required to create a new Order
 interface OrderAttrs {

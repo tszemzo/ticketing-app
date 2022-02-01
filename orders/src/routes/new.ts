@@ -13,6 +13,8 @@ import { Order } from '../models/order';
 import { Ticket } from '../models/ticket';
 
 const router = express.Router();
+// This variable could be an env variable, or something in the DB
+const EXPIRATION_WINDOW_SECONDS = 15 * 60;
 
 router.post('/api/orders', 
   requireAuth, 
@@ -30,21 +32,26 @@ router.post('/api/orders',
       throw new NotFoundError();
     }
 
-    const existingOrder = await Order.findOne({
-      ticket: ticket,
-      status: {
-        $in: [
-          OrderStatus.Created,
-          OrderStatus.AwaitingPayment,
-          OrderStatus.Complete
-        ]
-      }
-    })
-    if (existingOrder) {
+    const isReserved = await ticket.isReserved();
+    if (isReserved) {
       throw new BadRequestError('Ticket is already reserved');
     }
 
-    res.send({});
+    // Calculate an expiration date for this order
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS)
+
+    // Build the order and save into the DB
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      status: OrderStatus.Created,
+      expiresAt: expiration,
+      ticket
+    });
+    await order.save();
+
+
+    res.status(201).send(order);
   }
 );
 
