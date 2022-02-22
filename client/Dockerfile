@@ -1,5 +1,5 @@
 # Specify a base image
-FROM node:alpine
+FROM node:16.5.0-alpine
 
 # This creates the folder "app" inside "usr" inside the container
 WORKDIR /app
