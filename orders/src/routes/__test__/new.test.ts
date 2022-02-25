@@ -51,4 +51,16 @@ it('should reserve a ticket correctly', async () => {
   expect(response.status).toEqual(201);
 });
 
-it.todo('emits an order created event');
+it('emits an order created event', async () => {
+  const cookie = await signup();
+  const ticket = Ticket.build({ ...TICKET });
+  await ticket.save();
+
+  const response =  await request(app)
+    .post('/api/orders')
+    .set('Cookie', cookie)
+    .send({ ticketId: ticket.id })
+
+  expect(response.status).toEqual(201);
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
