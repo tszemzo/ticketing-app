@@ -9,8 +9,9 @@ import {
   validateRequest  
 } from '@ts-tickets/common';
 import { natsWrapper } from '../nats-wrapper';
-import { Order } from '../models/order';
 import { Ticket } from '../models/ticket';
+import { Order } from '../models/order';
+import { OrderCreatedPublsher }
 
 const router = express.Router();
 // This variable could be an env variable, or something in the DB
