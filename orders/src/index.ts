@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import { natsWrapper } from './nats-wrapper';
-
 import { app } from './app';
+import { natsWrapper } from './nats-wrapper';
+import { TicketCreatedListener } from './events/listeners/ticket-created-listener';
+import { TicketUpdatedListener } from './events/listeners/ticket-updated-listener';
 
 const start = async () => {
   // Check the env variable has been defined
@@ -34,7 +35,10 @@ const start = async () => {
       process.exit();
     });
     process.on('SIGINT', () => natsWrapper.client.close());
-    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
+    
+    new TicketCreatedListener(natsWrapper.client).listen();
+    new TicketUpdatedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,

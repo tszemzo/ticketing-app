@@ -4,6 +4,7 @@ import { Order, OrderStatus } from './order';
 // An interface that describes the props
 // that are required to create a new Ticket
 interface TicketAttrs {
+  id: string;
   title: string;
   price: number;
 }
@@ -51,7 +52,11 @@ const ticketSchema = new mongoose.Schema({
 // Now we are going to use this method as a constructor: 
 // const ticket = ticket.build({ title: 'A title', price: 12 })
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
-  return new Ticket(attrs);
+  return new Ticket({
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price,
+  });
 };
 
 ticketSchema.methods.isReserved = async function() {

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 // An interface that describes the props
 // that are required to create a new Ticket
@@ -20,6 +21,7 @@ interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
   userId: string;
+  version: number;
 }
 
 const ticketSchema = new mongoose.Schema({
@@ -49,6 +51,10 @@ const ticketSchema = new mongoose.Schema({
    } 
  }
 );
+
+ticketSchema.set('versionKey', 'version');
+// Plugs in the version updater on the each ticket schema
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 // Pattern for creating a Ticket with attrs we want to control by TypeScript
 // Now we are going to use this method as a constructor: 
