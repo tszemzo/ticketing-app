@@ -20,7 +20,7 @@ it('should return an error if the ticket does not exist', async () => {
 
 it('should return an error if the tickets is already reserved', async () => {
   const cookie = await signup();
-  const ticket = Ticket.build({ ...TICKET });
+  const ticket = Ticket.build({ ...TICKET, id: mongoose.Types.ObjectId().toHexString() });
   await ticket.save();
 
   const order = Order.build({ 
@@ -40,7 +40,7 @@ it('should return an error if the tickets is already reserved', async () => {
 
 it('should reserve a ticket correctly', async () => {
   const cookie = await signup();
-  const ticket = Ticket.build({ ...TICKET });
+  const ticket = Ticket.build({ ...TICKET, id: mongoose.Types.ObjectId().toHexString() });
   await ticket.save();
 
   const response =  await request(app)
@@ -53,7 +53,7 @@ it('should reserve a ticket correctly', async () => {
 
 it('emits an order created event', async () => {
   const cookie = await signup();
-  const ticket = Ticket.build({ ...TICKET });
+  const ticket = Ticket.build({ ...TICKET, id: mongoose.Types.ObjectId().toHexString() });
   await ticket.save();
 
   const response =  await request(app)

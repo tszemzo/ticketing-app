@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { OrderStatus } from '@ts-tickets/common';
 import { TicketDoc } from './ticket';
 
@@ -61,6 +62,9 @@ const orderSchema = new mongoose.Schema({
    } 
  }
 );
+
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
 
 // Pattern for creating a Order with attrs we want to control by TypeScript
 // Now we are going to use this method as a constructor: 
