@@ -22,6 +22,7 @@ interface TicketDoc extends mongoose.Document {
   price: number;
   userId: string;
   version: number;
+  orderId?: string; // possibly undefined
 }
 
 const ticketSchema = new mongoose.Schema({
@@ -36,6 +37,9 @@ const ticketSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true
+  },
+  orderId: {
+    type: String,
   }
 },
  // Redefinind how we return Ticket schema object to avoid _id 
