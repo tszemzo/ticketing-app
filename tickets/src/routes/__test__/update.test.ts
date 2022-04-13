@@ -5,6 +5,7 @@ import { app } from '../../app';
 import { signup } from '../../test/utils';
 import { TICKET } from '../../test/constants';
 import { natsWrapper } from '../../nats-wrapper';
+import { Ticket } from '../../models/ticket';
 
 const { price, title } = TICKET;
 
@@ -127,4 +128,31 @@ it('should publish an update event', async () => {
     .expect(200);
 
   expect(natsWrapper.client.publish).toHaveBeenCalledTimes(2);
+});
+
+it('should reject the update if the ticket is reserved', async () => {  
+  const cookie = await signup();
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title,
+      price,
+      orderId: '1111'
+    });
+
+  const ticket = await Ticket.findById(response.body.id);
+  ticket!.set({ orderId: mongoose.Types.ObjectId().toString() });
+  await ticket!.save();
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'A valid title',
+      price: 1000
+    })
+    .expect(400);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalledTimes(1);
 });
