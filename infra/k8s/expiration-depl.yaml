@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  # This two parts says which pod it should try to manage
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+        - name: expiration
+          image: tszemzo/expiration:latest
+          # List of env variables of our container
+          env:
+            # NATS Env variables
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # This sets the pod name to the client ID value so we can easily match them if we have more than one tckt service (as this ID should be unique)
+            - name: REDIS_HOST
+              value: expiration-redis-srv
