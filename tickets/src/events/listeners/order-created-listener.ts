@@ -1,8 +1,8 @@
 import { Message } from 'node-nats-streaming';
 import { Subjects, Listener, OrderCreatedEvent } from '@ts-tickets/common';
+import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../../models/ticket';
 import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
-import { queueGroupName } from './queue-group-name';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   subject: Subjects.OrderCreated = Subjects.OrderCreated;
