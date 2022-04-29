@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-depl
+spec:
+  replicas: 1
+  # This two parts says which pod it should try to manage
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: tszemzo/payments:latest
+          # List of env variables of our container
+          env:
+            # NATS Env variables
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name # This sets the pod name to the client ID value so we can easily match them if we have more than one tckt service (as this ID should be unique)
+            # As this lives inside the cluster and there arent any user or passwords, this is secure
+            - name: MONGO_URI
+              value: 'mongodb://payments-mongo-srv:27017/payments'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: payments-srv
+spec:
+  selector:
+    app: payments
+  # ClusterIP is the default, not necessary to explicit it
+  type: ClusterIP
+  ports:
+    - name: payments
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
